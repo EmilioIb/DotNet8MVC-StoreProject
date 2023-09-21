@@ -77,14 +77,15 @@ namespace StoreProjectWeb.Areas.Admin.Controllers
                 if(productVM.Product.ProductId == 0)
                 {
                     _unitOfWork.Product.Add(productVM.Product);
+                    TempData["success"] = "Product created successfully";
                 }
                 else
                 {
                     _unitOfWork.Product.Update(productVM.Product);
+                    TempData["success"] = "Product updated successfully";
                 }
 
                 _unitOfWork.Save();
-                TempData["success"] = "Product created successfully";
                 return RedirectToAction("Index");
             }
             else

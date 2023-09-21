@@ -19,7 +19,7 @@ namespace StoreProject.DataAccess.Repository
 
         public void Update(Product obj)
         {
-            var objFromDb = _db.Products.FirstOrDefault(u => u.CategoryId == obj.CategoryId);
+            var objFromDb = _db.Products.FirstOrDefault(u => u.ProductId == obj.ProductId);
             if (objFromDb != null)
             {
                 objFromDb.Title = obj.Title;
