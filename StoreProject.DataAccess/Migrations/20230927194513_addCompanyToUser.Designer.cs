@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreProject.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using StoreProject.DataAccess.Data;
 namespace StoreProject.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230927194513_addCompanyToUser")]
+    partial class addCompanyToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -477,8 +480,7 @@ namespace StoreProject.DataAccess.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
-                        .IsRequired()
+                    b.Property<int?>("MyProperty")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -494,7 +496,7 @@ namespace StoreProject.DataAccess.Migrations
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("MyProperty");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -565,9 +567,7 @@ namespace StoreProject.DataAccess.Migrations
                 {
                     b.HasOne("StoreProject.Models.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MyProperty");
 
                     b.Navigation("Company");
                 });

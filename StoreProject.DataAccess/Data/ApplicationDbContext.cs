@@ -15,6 +15,7 @@ namespace StoreProject.DataAccess.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers {  get; set; }
+        public DbSet<Company> Companies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -110,6 +111,12 @@ namespace StoreProject.DataAccess.Data
                     CategoryId = 2,
                     ImageUrl = "",
                 }
+            );
+
+            modelBuilder.Entity<Company>().HasData(
+                new Company { CompanyId = 1, Name = "Sabritas", StreetAddress = "Calle Solo Una #56", City = "Torreon", State = "Coahuila", PostalCode = "40000", PhoneNumber = "8711223344" },
+                new Company { CompanyId = 2, Name = "Telmex", StreetAddress = "Avenida Infinitum #100", City = "Lerdo", State = "Durango", PostalCode = "20000", PhoneNumber = "8788997744" },
+                new Company { CompanyId = 3, Name = "Combugas", StreetAddress = "Boulevard Flamita #732", City = "Gomez Palacio", State = "Durango", PostalCode = "30000", PhoneNumber = "8717321111" }
             );
         }
     }
