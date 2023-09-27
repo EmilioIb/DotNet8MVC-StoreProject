@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StoreProject.DataAccess.Data;
 using StoreProject.DataAccess.Repository.IRepository;
 using StoreProject.Models;
+using StoreProject.Utility;
 
 namespace StoreProjectWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -14,6 +17,8 @@ namespace StoreProjectWeb.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        //Se puede añadir autorizacion a acciones unicas
+        //[Authorize(Roles = SD.Role_Admin)]
         public IActionResult Index()
         {
             List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
