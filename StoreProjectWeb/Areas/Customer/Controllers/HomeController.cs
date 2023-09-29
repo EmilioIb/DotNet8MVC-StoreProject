@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StoreProject.DataAccess.Repository;
 using StoreProject.DataAccess.Repository.IRepository;
 using StoreProject.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace StoreProjectWeb.Areas.Customer.Controllers
 {
@@ -24,10 +26,57 @@ namespace StoreProjectWeb.Areas.Customer.Controllers
             return View(productList);
         }
 
-        public IActionResult Details(int? id)
+        public IActionResult Details(int productId)
         {
-            Product product = _unitOfWork.Product.Get(u => u.ProductId == id,includeProperties: "Category");
-            return View(product);
+            ShoppingCart cart = new()
+            {
+                Product = _unitOfWork.Product.Get(u => u.ProductId == productId, includeProperties: "Category"),
+                Count = 1,
+                ProductId = productId
+            };
+            return View(cart);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(ShoppingCart shoppingCart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            shoppingCart.ApplicationUserId = userId;
+
+            if (shoppingCart.Count >= 1 && shoppingCart.Count <= 150)
+            {
+                ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.Get(u =>
+                u.ApplicationUserId == userId && u.ProductId == shoppingCart.ProductId);
+
+                if (cartFromDb != null)
+                {
+                    cartFromDb.Count += shoppingCart.Count;
+                    _unitOfWork.ShoppingCart.Update(cartFromDb);
+                }
+                else
+                {
+                    _unitOfWork.ShoppingCart.Add(shoppingCart);
+                }
+
+                TempData["success"] = "Cart updated successfully";
+                _unitOfWork.Save();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            ShoppingCart cart = new()
+            {
+                Product = _unitOfWork.Product.Get(u => u.ProductId == shoppingCart.ProductId, includeProperties: "Category"),
+                Count = 1,
+                ProductId = shoppingCart.ProductId
+            };
+
+            return View(cart);
+
+
+
         }
 
         public IActionResult Privacy()
