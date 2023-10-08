@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StoreProject.DataAccess.Repository;
 using StoreProject.DataAccess.Repository.IRepository;
 using StoreProject.Models;
+using StoreProject.Utility;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -54,16 +56,21 @@ namespace StoreProjectWeb.Areas.Customer.Controllers
                 {
                     cartFromDb.Count += shoppingCart.Count;
                     _unitOfWork.ShoppingCart.Update(cartFromDb);
+                    _unitOfWork.Save();
                 }
                 else
                 {
                     _unitOfWork.ShoppingCart.Add(shoppingCart);
+                    _unitOfWork.Save();
+                    HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(u =>
+                        u.ApplicationUserId == userId).Count());
                 }
 
                 TempData["success"] = "Cart updated successfully";
-                _unitOfWork.Save();
+                
 
                 return RedirectToAction(nameof(Index));
+
             }
 
             ShoppingCart cart = new()

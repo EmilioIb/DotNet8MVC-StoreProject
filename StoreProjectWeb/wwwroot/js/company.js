@@ -42,7 +42,6 @@ function Delete(url) {
                 url: url,
                 type: 'DELETE',
                 success: function (data) {
-                    console.log(data)
                     dataTable.ajax.reload();
                     toastr.success(data.message)
                 }
