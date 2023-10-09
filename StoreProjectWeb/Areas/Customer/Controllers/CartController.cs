@@ -33,8 +33,11 @@ namespace StoreProjectWeb.Areas.Customer.Controllers
                 OrderHeader = new()
             };
 
+            IEnumerable<ProductImage> productImages = _unitOfWork.ProductImage.GetAll();
+
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
+                cart.Product.ProductImages = productImages.Where(u => u.ProductId == cart.Product.ProductId).ToList();
                 cart.Price = GetPricesBaseOnCuantity(cart);
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
